@@ -18,7 +18,7 @@ require('./config/passport')(passport)
 connectDB()
 
 
-//logging
+//loggging
 if(process.env.NODE_ENV=="development"){
     app.use(morgan('dev'));
 }
