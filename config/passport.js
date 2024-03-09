@@ -1,4 +1,3 @@
-
 const GoogleStratergy=require('passport-google-oauth20').Strategy
 const mongoose=require('mongoose')
 const User=require('../models/User')
@@ -15,8 +14,6 @@ const newUser={
     firstName:profile.name.givenName,
     lastName:profile.name.familyName,
     image:profile.photos[0].value,
-
-
 }
 try {
     let user= await User.findOne({googleId:profile.id})

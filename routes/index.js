@@ -8,19 +8,19 @@ router.get("/",ensureGuest,(req,res)=>{
 
 router.get("/dashboard",ensureAuth,(req,res)=>
 {
-    console.log(req.user)
-    res.render("dashboard",{name:req.user.firstName})
-})
-router.post("/dashboard", async (req,res)=>
+    console.log(req.session.loggedin)
+    if(req.session.loggedin!=true){
+    res.render("dashboard",{name:req.user.firstName})}
+    else{
+        res.render("dashboard",{name:req.session.username})}
+    }
+)
+router.post("/dashboard",ensureAuth, async (req,res)=>
 
 {
     
-    var CurrentDate=Date.now
-    console.log(CurrentDate)
-
-
-
-
+    
+    if(req.session.loggedin!=true){
     let newCrush= {
         crushName:req.body.crush,
         userName:req.user.firstName,
@@ -37,7 +37,29 @@ router.post("/dashboard", async (req,res)=>
         
     } catch (err) {
         console.log(err)
-   } })
+   }
+}
+    else{
+        let newCrush= {
+            crushName:req.body.crush,
+            userName:req.session.username,
+        }
+        try {
+            let crush= await Crush.findOne({userName:req.session.username})
+            if(crush){
+                res.send(" can't register again")
+            }
+            else{
+                crush=await Crush.create(newCrush)
+                res.send("Okay")
+            }
+            
+        } catch (err) {
+            console.log(err)
+       }
+    }
+
+     })
      
     router.post('/logout', function(req, res, next){
         req.logout(function(err) {
